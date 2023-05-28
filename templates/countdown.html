@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Countdown to Deadline</title>
+    <style>
+        body {
+            background-color: #222;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            color: #fff;
+        }
+
+        h1 {
+            font-size: 28px;
+            margin-top: 100px;
+        }
+
+        #countdown {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 200px;
+            margin-top: 20px;
+            animation: fade 1s infinite alternate;
+        }
+
+        .calendar-page {
+            width: 100px;
+            height: 120px;
+            margin: 0 10px;
+            padding: 5px;
+            background-color: #444;
+            border-radius: 5px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .calendar-page span {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #fff;
+        }
+
+        .calendar-page small {
+            font-size: 12px;
+            color: #aaa;
+        }
+
+        .deadline-form {
+            margin-top: 20px;
+        }
+
+        .deadline-form label {
+            font-size: 16px;
+            font-weight: bold;
+            margin-right: 5px;
+        }
+
+        .deadline-form input[type="datetime-local"] {
+            padding: 8px;
+            font-size: 16px;
+            background-color: #fff;
+            color: #000;
+        }
+
+        .deadline-form input[type="submit"] {
+            padding: 8px 16px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        @keyframes fade {
+            from {
+                opacity: 0.5;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Countdown to Deadline</h1>
+    <div id="countdown"></div>
+
+    <form class="deadline-form" onsubmit="setDeadline(event)">
+        <label for="deadline-input">Set Deadline:</label>
+        <input type="datetime-local" id="deadline-input" required>
+        <input type="submit" value="Set">
+    </form>
+
+    <script>
+        function updateCountdown() {
+            // Make an AJAX request to fetch the countdown values
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", "/countdown?deadline=" + encodeURIComponent(document.getElementById("deadline-input").value), true);
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    var countdownValues = JSON.parse(xhr.responseText);
+
+                    // Update the countdown display
+                    var countdownElement = document.getElementById("countdown");
+                    countdownElement.innerHTML = "";
+
+                    for (var key in countdownValues) {
+                        var calendarPage = document.createElement("div");
+                        calendarPage.className = "calendar-page";
+
+                        var valueElement = document.createElement("span");
+                        valueElement.innerText = countdownValues[key];
+                        calendarPage.appendChild(valueElement);
+
+                        var unitElement = document.createElement("small");
+                        unitElement.innerText = key;
+                        calendarPage.appendChild(unitElement);
+
+                        countdownElement.appendChild(calendarPage);
+                    }
+                }
+            };
+            xhr
