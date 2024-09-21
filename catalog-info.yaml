@@ -1,0 +1,15 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: countdownapp
+  description: Description of the countdownapp repository
+  annotations:
+    github.com/project-slug: ankkitraj/countdownapp
+spec:
+  type: service
+  owner: ankkitraj
+  lifecycle: production
+  system: my-system
+  links:
+    - url: https://github.com/ankkitraj/countdownapp
+      title: Repository
